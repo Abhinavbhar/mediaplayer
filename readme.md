@@ -1,1 +1,1 @@
-this is a fully fle
+this is a fully fledged video streaming application 
