@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import coolieParser from 'cookie-parser';
+import cookieParser from "cookie-parser"
 const app = express();
 app.use(cors({
   origin: process.env.CORS_ORIGIN,
@@ -16,6 +16,10 @@ app.use(express.urlencoded({
   limit: "16kb"
 }))
 app.use(express.static("public"))
-app.use(coolieParser())
+app.use(cookieParser())
 
+//routes import 
+import { userRouter } from './routes/user.routes.js'
+// routes declarations 
+app.use("/api/v1/user", userRouter)
 export { app }
