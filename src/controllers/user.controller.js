@@ -1,4 +1,4 @@
-import asyncHandler from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
@@ -20,7 +20,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if ([username, password, fullname, email].some((field) => field?.trim() === '')) {
     throw new ApiError(400, "every filed is required")
   }
-  const existedUser = User.findOne({
+  const existingUser = await User.findOne({
     $or: [{ username }, { email }]
   })
   if (existingUser) {
@@ -31,10 +31,17 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!avatarLocalPath) {
     throw new ApiError(400, "avatar file is required")
   }
+
+  const avatar = await uploadOnCloudinary(avatarLocalPath)
+  console.log("avatar object is", avatar
+  )
+  console.log("url is ", avatar)
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+
   const user = await User.create({
     fullname,
     avatar: avatar.url,
-    coverImage: coverImage?.url || "",
+    coverImage: coverImage.url || "",
     email,
     password,
     username: username.toLowerCase()
